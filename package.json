@@ -1,0 +1,11 @@
+{
+  "name": "myBank",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/MichaelJPDX/mybank.git",
+  "author": "Michael Holland <michaelbkk.mh@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^2.12.2"
+  }
+}
