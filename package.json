@@ -6,6 +6,7 @@
   "author": "Michael Holland <michaelbkk.mh@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "commander": "^2.12.2"
+    "commander": "^2.12.2",
+    "inquirer": "^4.0.1"
   }
 }

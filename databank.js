@@ -3,15 +3,19 @@
 **
 *   These structures would normally be empty, but I've added some data for testing
 */
-var accounts = [{id: '1', name: 'Michael', username: 'michaelBKK', password: '12345', balance: 1000000}];
+var accounts = [{id: '1', name: 'Michael', username: 'michael', password: '12345', balance: 1000000}];
 
 /*
 * Add a new account, what conditioning required?
 */
 addAccount = function(acctInfo){
-    var newAcct = {id: accounts.length, name: acctInfo.name, username: acctInfo.username, password: acctInfo.password, balance: 0};
+    //  Using the accounts array length as the ID for new accounts is a "cheat" but works for now
+    var newAcct = {id: (accounts.length + 1), 
+                   name: acctInfo.name, 
+                   username: acctInfo.username.toLowerCase(), 
+                   password: acctInfo.password, balance: 0};
     accounts.push(newAcct);
-    console.info("added account " + newAcct.name);
+    console.info("Added account for " + acctInfo.name);
 }
 getAccount = function(key){
     for (var i = 0; i < accounts.length; i++) {
@@ -19,18 +23,39 @@ getAccount = function(key){
     }
 }
 
+userLogin = function(userData){
+    testUser = userData.username.toLowerCase();
+    for (var i = 0; i < accounts.length; i++) {
+        //console.info("Checking acct user " + accounts[i].username);
+        if (accounts[i].username === testUser) {
+            if (accounts[i].password === userData.password) {
+                return accounts[i]; 
+            }
+        }
+    }
+    console.error("Sorry, cannot find your login info.")
+    return false;
+}
+
 var trans = [{acct: 1, type: 'D', date: '2017-12-08 15:11', amount: 1000000}];
 
 newTx = function(acct, txType, txAmt){
     var curAcct = getAccount(acct);
+    var curBalance = parseFloat(curAcct.balance);
+    var txAmtDec = parseFloat(txAmt);
     switch (txType.toLowerCase()) {
         case 'd':
-            curAcct.balance += txAmt;
+            curAcct.balance = curBalance + txAmtDec;
             console.info("Deposited " + txAmt);
             break;
         case 'w':
-            curAcct.balance -= txAmt;
-            console.info("Withdrawing " + txAmt);
+            if (txAmtDec < curBalance) {
+                curAcct.balance = curBalance - txAmtDec;
+                console.info("Withdrawing " + txAmt);
+            } else {
+                console.error("You cannot withdraw more than you have on deposit.");
+                return;
+            }
             break;
     }
     var d = new Date;
@@ -39,4 +64,4 @@ newTx = function(acct, txType, txAmt){
     console.info("New balance is: " + curAcct.balance);
 }
 
-module.exports = { addAccount, newTx };
+module.exports = { addAccount, newTx, userLogin };
