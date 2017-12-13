@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Foundation for Sites</title>
+    <title>MyBank</title>
     <link rel="stylesheet" href="css/app.css">
   </head>
   <body>
@@ -27,9 +27,6 @@
               <h2>Welcome to MyBank</h2>
               
               <p>Please chose one of the options at left to get started.</p>
-              
-              
-              
           </div>
         </div>
       </div>
@@ -69,15 +66,15 @@
 </script>
 <script id="loginForm" type="text/x-handlebars-template">
     <h2>Login</h2>
-    <form>
+    <form id="formLogin" method="post">
         <div class="grid-x grid-padding-x">
             <div class="large-6 medium-6 cell">
                 <label>Your user name</label>
-                <input type="text" placeholder="Enter your user name" />
+                <input type="text" name="username" id="username" placeholder="Enter your user name" />
             </div>
             <div class="large-6 medium-6 cell">
                 <label>Password</label>
-                <input type="password" placeholder="Password" />
+                <input type="password" name="password" id="password" placeholder="Password" />
             </div>
         </div>
         <div class="grid-x grid-padding-x">

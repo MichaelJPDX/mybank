@@ -9,13 +9,22 @@ var accounts = [{id: '1', name: 'Michael', username: 'michael', password: '12345
 * Add a new account, what conditioning required?
 */
 addAccount = function(acctInfo){
+    // First, make sure a username isn't being duplicated
+    for (var i = 0; i < accounts.length; i++) {
+        if (accounts[i].username.toLowerCase() === acctInfo.username.toLowerCase()) { 
+            console.error("Sorry, that username is already in use. Please try again.");
+            return false;
+        }
+    }
+    
     //  Using the accounts array length as the ID for new accounts is a "cheat" but works for now
     var newAcct = {id: (accounts.length + 1), 
                    name: acctInfo.name, 
                    username: acctInfo.username.toLowerCase(), 
                    password: acctInfo.password, balance: 0};
     accounts.push(newAcct);
-    console.info("Added account for " + acctInfo.name);
+    console.info("Added account for " + acctInfo.name + "\n\nPlease log in");
+    return true;
 }
 getAccount = function(key){
     for (var i = 0; i < accounts.length; i++) {
@@ -37,7 +46,7 @@ userLogin = function(userData){
     return false;
 }
 
-var trans = [{acct: 1, type: 'D', date: '2017-12-08 15:11', amount: 1000000}];
+var trans = [{acct: 1, type: 'd', date: '2017-12-08 15:11', amount: 1000000}];
 
 newTx = function(acct, txType, txAmt){
     var curAcct = getAccount(acct);
@@ -64,4 +73,14 @@ newTx = function(acct, txType, txAmt){
     console.info("New balance is: " + curAcct.balance);
 }
 
-module.exports = { addAccount, newTx, userLogin };
+listTx = function(acct) {
+    var acctTx = new Array();
+    for (var j = 0; j < trans.length; j++) {
+        if (trans[j].acct === acct) { 
+            acctTx.push(trans[j]); 
+        }
+    }
+    return acctTx;
+}
+
+module.exports = { addAccount, newTx, userLogin, listTx };

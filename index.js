@@ -4,7 +4,7 @@
 const program = require('commander'); // handles command-line inputs
 const { prompt } = require('inquirer'); // supports interactive console
 
-const { addAccount, getAccount, newTx, userLogin } = require('./databank');
+const { addAccount, getAccount, newTx, userLogin, listTx } = require('./databank');
 
 var userAcct = false;
 var exitBank = false;
@@ -31,7 +31,6 @@ function startupOptions() {
                     break;
                 case "N":
                     promptNewAccount();
-                    promptLogin();
                     break;
                 case "X":
                     return true;
@@ -61,6 +60,7 @@ function acctOptions() {
                 addTrans('w');
                 break;
             case "l":
+                listTrans();
                 break;
             case "x":
                 startupOptions();
@@ -89,7 +89,13 @@ const addQuestions = [
 ];
 
 function promptNewAccount() {
-    prompt(addQuestions).then(answers => addAccount(answers));
+    prompt(addQuestions).then(answers => {
+        if (addAccount(answers)) {
+            promptLogin();
+        } else {
+            promptNewAccount();
+        }
+    });
 }
 
 const loginQuestions = [
@@ -127,6 +133,24 @@ function addTrans(transType) {
         newTx(userAcct.id, transType, answers.amount);
         acctOptions();
     });
+}
+
+function listTrans() {
+    var transactions = listTx(userAcct.id);
+    var dispType = '';
+    if (transactions.length > 0) {
+        console.log('Date\t\t\tType\t\tAmount')
+        for (var n = 0; n < transactions.length; n++) {
+            if (transactions[n].type.toLocaleLowerCase() === 'd') {
+                dispType = 'Deposit\t';
+            } else {
+                dispType = 'Withdrawal';
+            }
+            console.log(transactions[n].date + '\t' + dispType + '\t' + parseFloat(transactions[n].amount));
+        }
+        console.log('Ending balance: ' + userAcct.balance);
+    }
+    acctOptions();
 }
 
 startupOptions();
