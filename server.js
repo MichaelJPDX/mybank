@@ -9,16 +9,16 @@ const { addAccount, getAccount, newTx, userLogin, listTx } = require('./databank
 var userAcct = false;
 var exitBank = false;
 
-app.post('/login', function(req, res){
-    console.log("User login attempt: " + req.body.username);
-    userAcct = userLogin({ username: req.body.username, password: req.body.password });
+app.get('/login', function(req, res){
+    console.log("User login attempt: " + req.params.username);
+    userAcct = userLogin({ username: req.params.username, password: req.params.password });
     if (!userAcct) {
         // return error response
         console.error("Failed login attempt");
     } else {
-        console.info("Successfule login");
-        res.send(userAcct);
+        console.info("Successful login");
+        res.json(userAcct);
     }
 });
 
-app.listen(3000, () => console.log('Server started and listening on port 3000!'))
+app.listen(3000, () => console.log('Server started and listening on port 3000!'));

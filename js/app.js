@@ -42,18 +42,9 @@ $(document).ready(function(){
         event.preventDefault();
         var uname = $('#username').val();
         var pword = $('#password').val();
-        //console.log("Posting user " + uname + " password: " + password);
-        $.ajax({
-            url: 'http://localhost:3000/login',
-            data: {
-                    username: uname,
-                    password: pword
-                },
-            type: 'POST',
-            dataType: 'jsonp',
-            success: function(data, status) {
+        console.log("Posting user " + uname + " password: " + password);
+        $.getJSON('http://localhost:3000/login?callback=userAcct', function(data, status) {
                 console.log("data: " + data);
-            }});
+            });
     });
-    //console.log("App.js loaded");
 });
