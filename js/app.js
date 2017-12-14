@@ -37,14 +37,25 @@ $(document).ready(function(){
         
     });
     
+    //  Vars for account data
+    var acctID = 0;
+    var friendlyName = "";
+    var balance = 0.0;
+    
     // Form handlers
     $(document).on('submit', '#formLogin', function(event) {
         event.preventDefault();
         var uname = $('#username').val();
         var pword = $('#password').val();
         console.log("Posting user " + uname + " password: " + password);
-        $.getJSON('http://localhost:3000/login?callback=userAcct', function(data, status) {
-                console.log("data: " + data);
-            });
+        $.ajax({
+            type: "POST",
+            url: '/login', 
+            data: {username: uname, password: pword}, 
+            dataType: 'json',
+            success: function(data, status) {
+                console.log("data: " + JSON.stringify(data));
+            }
+        });
     });
 });
