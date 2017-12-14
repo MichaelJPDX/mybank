@@ -76,8 +76,8 @@ newTx = function(acct, txType, txAmt){
 listTx = function(acct) {
     var acctTx = new Array();
     for (var j = 0; j < trans.length; j++) {
-        if (trans[j].acct === acct) { 
-            acctTx.push(trans[j]); 
+        if (parseInt(trans[j].acct) === parseInt(acct)) { 
+            acctTx.push(trans[j]);
         }
     }
     return acctTx;

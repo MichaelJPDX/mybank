@@ -20,10 +20,31 @@ app.post('/login', function(req, res){
     if (!userAcct) {
         // return error response
         console.error("Failed login attempt");
+        res.status(500).send("Unable to login. Please check your user name and password.");
     } else {
         console.info("Successful login");
         res.json(userAcct);
     }
+});
+
+app.post('/adduser', function(req, res){
+    console.log("Add user attempt: " + req.body.username);
+    var addResult = addAccount({ name: req.body.name, username: req.body.username, password: req.body.password });
+    if (!addResult) {
+        // return error response
+        console.error("Failed login attempt");
+        res.status(500).send("Your user name already exists. Please try another.");
+    } else {
+        console.info("Successful login");
+        res.json({ result: "OK" });
+    }
+});
+
+app.post('/gettx', function(req, res){
+    console.log("Getting transactions for account: " + req.body.account);
+    var transactions = listTx(req.body.account);
+                //console.log("data: " + JSON.stringify(transactions));
+    res.json(transactions);
 });
 
  app.get(/^(.+)$/, function(req, res){ 

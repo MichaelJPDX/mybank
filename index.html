@@ -18,7 +18,7 @@
       <div class="grid-x grid-padding-x">
           <div class="small-3 cell callout alert">
               <h3>Options</h3>
-              <ul class="vertical menu">
+              <ul class="vertical menu" id="menu">
                   <li><a href="#" id="showLogin">Login</a></li>
                   <li><a href="#" id="showNewAcct">New Account</a></li>
               </ul>
@@ -40,21 +40,22 @@
 
 <script id="addAccount" type="text/x-handlebars-template">
     <h2>Add Account</h2>
-    <form>
+    <p id="errorAdd" style="color: red;"></p>
+    <form id="formAdd" method="post">
         <div class="grid-x grid-padding-x">
             <div class="large-12 cell">
             <label>Your name:</label>
-            <input type="text" placeholder="Please provide your full name" />
+            <input type="text" name="addName" id="addName" placeholder="Please provide your full name" />
         </div>
         </div>
         <div class="grid-x grid-padding-x">
             <div class="large-6 medium-6 cell">
                 <label>Pick a user name</label>
-                <input type="text" placeholder="Enter your user name" />
+                <input type="text" name="addUser" id="addUser" placeholder="Enter your user name" />
             </div>
             <div class="large-6 medium-6 cell">
                 <label>Choose a password</label>
-                <input type="password" placeholder="Password" />
+                <input type="password" name="addPass" id="addPass" placeholder="Password" />
             </div>
         </div>
         <div class="grid-x grid-padding-x">
@@ -66,6 +67,7 @@
 </script>
 <script id="loginForm" type="text/x-handlebars-template">
     <h2>Login</h2>
+    <p id="errorText" style="color: red;"></p>
     <form id="formLogin" method="post">
         <div class="grid-x grid-padding-x">
             <div class="large-6 medium-6 cell">
@@ -84,10 +86,16 @@
           </div>
     </form>
 </script>
+<script id="greeting" type="text/x-handlebars-template">
+    <h2>Welcome back {{name}}</h2>
+    
+    <p>Your current balance is {{balance}}</p>
+</script>
 
 <script id="transTpl" type="text/x-handlebars-template">
       <h2>Transactions</h2>
         <div class="grid-x grid-padding-x">
+            <form id="newTx" method="post">
             <table class="large-10 large-offset-1 cell hover">
                 <thead>
                     <tr><th>Date &amp; Time</th>
@@ -106,16 +114,24 @@
                     </tr>
                     <tr><td><button type="submit" class="button success">Save transaction</button></td>
                         <td><select size="1">
-                                <option>Deposit</option>
-                                <option>Withdrawal</option>
+                                <option value="d">Deposit</option>
+                                <option value="w">Withdrawal</option>
                             </select>
                         </td>
                         <td><input type="text" placeholder="amount" /></td>
                     </tr>
                 </tbody>
             </table>
+            </form>
       </div>
 </script>
-
+<script id="startMenu" type="text/x-handlebars-template">
+    <li><a href="#" id="showLogin">Login</a></li>
+    <li><a href="#" id="showNewAcct">New Account</a></li>
+</script>
+<script id="acctOptions" type="text/x-handlebars-template">
+    <li><a href="#" id="register">Transactions</a></li>
+    <li><a href="#" id="logout">Logout</a></li>
+</script>
 </body>
 </html>
