@@ -27,7 +27,7 @@ $(document).ready(function(){
     });
     
     // Menu handlers
-    $('#showLogin').on('click', function(event) {
+    $(document).on('click', '#showLogin', function(event) {
         event.preventDefault();
         var context = {};
         var compHTML = loginTpl(context);
@@ -35,7 +35,7 @@ $(document).ready(function(){
         
     });
 
-    $('#showNewAcct').on('click', function(event) {
+    $(document).on('click', '#showNewAcct', function(event) {
         event.preventDefault();
         var context = {};
         var compHTML = addTpl(context);
