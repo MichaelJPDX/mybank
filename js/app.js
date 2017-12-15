@@ -120,31 +120,28 @@ $(document).ready(function(){
             dataType: 'json',
             success: function(data, status) {
                 //console.log("data: " + JSON.stringify(data));
-                compHTML = txTpl({transactions: data});
+                compHTML = txTpl({ balance: balance, transactions: data});
                 $('#content-area').html(compHTML);
             }
         });
     });
     
-    // add transaction
-    // Add account
+    // add transaction - will return a new transaction list, so just repaint
     $(document).on('submit', '#newTx', function(event) {
         event.preventDefault();
-        var fname = $('#addName').val();
-        var uname = $('#addUser').val();
-        var pword = $('#addPass').val();
-        //console.log("Posting user " + uname + " password: " + password);
+        var ttype = $('#transtype').val();
+        var tamount = $('#txAmount').val();
         $.ajax({
             type: "POST",
-            url: '/adduser', 
-            data: { name: fname, username: uname, password: pword}, 
+            url: '/addtrans', 
+            data: { account: acctID, transtype: ttype, txamount: tamount }, 
             dataType: 'json',
             success: function(data, status) {
-                //console.log("data: " + JSON.stringify(data));
-                $('#content-area').html("<h2>Success!</h2><p>Your account has been created. Please login.</p>");
+                compHTML = txTpl({ balance: data.balance.formatMoney(2), transactions: data.transactions});
+                $('#content-area').html(compHTML);
             },
             error: function(xhr, options, thrownError) {
-                $('#errorAdd').text(xhr.responseText);
+                $('#errorTx').text(xhr.responseText);
             }
         });
     });

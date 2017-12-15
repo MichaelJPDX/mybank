@@ -47,9 +47,23 @@ app.post('/gettx', function(req, res){
     res.json(transactions);
 });
 
- app.get(/^(.+)$/, function(req, res){ 
+app.post('/addtrans', function(req, res){
+    console.log("Adding new transation: " + req.body.account);
+    var newbalance = newTx(req.body.account, req.body.transtype, req.body.txamount);
+    if (newbalance < 0) {
+        // tried to withdraw more than allowed
+        res.status(500).send("You cannot withdraw more than you have on deposit.");
+    } else {
+        //console.log("data: " + JSON.stringify(transactions));
+        var transactions = listTx(req.body.account);
+        var resultset = { balance: newbalance, transactions: transactions };
+        res.json(resultset);
+    }
+});
+
+app.get(/^(.+)$/, function(req, res){ 
      //console.log('static file request : ' + req.params);
      res.sendFile( __dirname + req.params[0]); 
- });
+});
 
 app.listen(3000, () => console.log('Server started and listening on port 3000!'));

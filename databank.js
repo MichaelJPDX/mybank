@@ -63,7 +63,7 @@ newTx = function(acct, txType, txAmt){
                 console.info("Withdrawing " + txAmt);
             } else {
                 console.error("You cannot withdraw more than you have on deposit.");
-                return;
+                return -1;
             }
             break;
     }
@@ -71,6 +71,7 @@ newTx = function(acct, txType, txAmt){
     var txDate = "" + d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate() + ' ' + d.getHours() + ":" + d.getMinutes();
     trans.push({acct: acct, type: txType, date: txDate, amount: txAmt});
     console.info("New balance is: " + curAcct.balance);
+    return curAcct.balance;
 }
 
 listTx = function(acct) {

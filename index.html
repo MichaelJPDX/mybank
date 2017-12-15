@@ -94,6 +94,7 @@
 
 <script id="transTpl" type="text/x-handlebars-template">
       <h2>Transactions</h2>
+    <p id="errorTx" style="color: red;"></p>
         <div class="grid-x grid-padding-x">
             <form id="newTx" method="post">
             <table class="large-10 large-offset-1 cell hover">
@@ -106,19 +107,19 @@
                 <tbody>
                     {{#translist transactions}}<tr><td>{{ date }}</td>
                         <td>{{ type }}</td>
-                        <td>{{ amount }}</td>
+                        <td align="right">{{ amount }}</td>
                     </tr>{{/translist}}
                     <tr><td></td>
                         <td><strong>Balance</strong></td>
-                        <td><strong>{{ balance }}</strong></td>
+                        <td align="right"><strong>{{ balance }}</strong></td>
                     </tr>
                     <tr><td><button type="submit" class="button success">Save transaction</button></td>
-                        <td><select size="1">
+                        <td><select name="transtype" id="transtype" size="1">
                                 <option value="d">Deposit</option>
                                 <option value="w">Withdrawal</option>
                             </select>
                         </td>
-                        <td><input type="text" placeholder="amount" /></td>
+                        <td><input type="number" name="txAmount" id="txAmount" placeholder="amount" /></td>
                     </tr>
                 </tbody>
             </table>
