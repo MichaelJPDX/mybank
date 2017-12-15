@@ -55,6 +55,20 @@ $(document).ready(function(){
        return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
      };
     
+    // Make transactions pretty
+    function prettyTx(translist) {
+        for (var j = 0; j < translist.length; j++) {
+            if (translist[j].type === 'd') {
+                translist[j].type = 'Deposit';
+                translist[j].amount = parseFloat(translist[j].amount).formatMoney(2);
+            } else {
+                translist[j].type = 'Withdrawal';
+                translist[j].amount = '-' + parseFloat(translist[j].amount).formatMoney(2);
+            }
+        }
+        return translist;
+    }
+    
     //  Vars for account data
     var acctID = 0;
     var friendlyName = "";
@@ -119,8 +133,8 @@ $(document).ready(function(){
             data: { account: acctID }, 
             dataType: 'json',
             success: function(data, status) {
-                //console.log("data: " + JSON.stringify(data));
-                compHTML = txTpl({ balance: balance, transactions: data});
+                console.log("data: " + JSON.stringify(data));
+                compHTML = txTpl({ balance: balance, transactions: prettyTx(data) });
                 $('#content-area').html(compHTML);
             }
         });
@@ -137,7 +151,8 @@ $(document).ready(function(){
             data: { account: acctID, transtype: ttype, txamount: tamount }, 
             dataType: 'json',
             success: function(data, status) {
-                compHTML = txTpl({ balance: data.balance.formatMoney(2), transactions: data.transactions});
+                console.log("data: " + JSON.stringify(data.transactions));
+                compHTML = txTpl({ balance: data.balance.formatMoney(2), transactions: prettyTx(data.transactions) });
                 $('#content-area').html(compHTML);
             },
             error: function(xhr, options, thrownError) {
@@ -145,4 +160,16 @@ $(document).ready(function(){
             }
         });
     });
+    
+    // Handle logout
+    $(document).on('click', '#logout', function(event) {
+        // reset account data
+        acctID = 0;
+        friendlyName = "";
+        balance = 0.0;
+        //  reset contents to login options
+        $('#content-area').html('<h2>Welcome to MyBank</h2><p>Please chose one of the options at left to get started.</p>');
+        $('#menu').html(smTpl({}));
+    });
+    
 });

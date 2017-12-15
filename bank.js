@@ -1,58 +1,173 @@
 /*
-**  Code challenge initial code
+**  Main driver for my banking application
 */
-var EventEmitter = require('events');
-var prompt = new EventEmitter();
-var current = null;
-var result = {};
-process.stdin.resume();
+const program = require('commander'); // handles command-line inputs
+const { prompt } = require('inquirer'); // supports interactive console
 
-/*
-logged in?
-N - login / new acct
-deposit
-withdraw
-balance
-trans. history
-logout
-*/
+const { addAccount, getAccount, newTx, userLogin, listTx } = require('./databank');
 
-/*  Data structures  */
-/*
-acounts/logins
-var accounts = [{id: 1, name: 'Michael', username: 'michaelBKK', password: '12345', balance: 1000000}];
-transactions
-var trans = [{acct: 1, type: 'D', date: '2017-12-08 15:11', amount: 1000000}];
-*/
+var userAcct = false;
+var exitBank = false;
 
-process.stdin.on('data', function(data){
-  prompt.emit(current, data.toString().trim());
+program
+    .version('0.0.1')
+    .description('MyBanking Applicaiton');
+
+function startupOptions() {
+    // On start up, offer login or new account
+    prompt([
+        {
+            type: 'list',
+            name: 'login',
+            choices: [{ name: 'Login', value: 'L'}, 
+                      { name: 'Create new accout', value: 'N'},
+                      { name: 'Exit', value: 'X' }],
+            message: 'Login or create new account'
+        }
+        ]).then(answers => {
+            switch (answers.login) {
+                case "L":
+                    promptLogin();
+                    break;
+                case "N":
+                    promptNewAccount();
+                    break;
+                case "X":
+                    return true;
+                    break;
+            }
+    });
+    return;
+}
+function acctOptions() {
+    prompt([
+        {
+            type: 'list',
+            name: 'optsel',
+            choices: [{ name: 'Deposit', value: 'd'},
+                      { name: 'Withdrawal', value: 'w'},
+                      { name: 'List Transactions', value: 'l'},
+                      { name: 'Logout', value: 'x'}
+                     ],
+            message: "Choose an option"
+        }
+    ]).then(answers => {
+        switch (answers.optsel) {
+            case "d":
+                addTrans('d');
+                break;
+            case "w":
+                addTrans('w');
+                break;
+            case "l":
+                listTrans();
+                break;
+            case "x":
+                startupOptions();
+                break;
+        }
+    })
+}
+
+// Questions for adding account
+const addQuestions = [
+    {
+        type: 'input',
+        name: 'name',
+        message: 'Your name ...'
+    },
+    {
+        type: 'input',
+        name: 'username',
+        message: 'Give us a user name ...'
+    },
+    {
+        type: 'password',
+        name: 'password',
+        message: 'Your password for logging in ...'
+    }
+];
+
+function promptNewAccount() {
+    prompt(addQuestions).then(answers => {
+        if (addAccount(answers)) {
+            promptLogin();
+        } else {
+            promptNewAccount();
+        }
+    });
+}
+
+const loginQuestions = [
+    {
+        type: 'input',
+        name: 'username',
+        message: 'Enter your user name ...'
+    },
+    {
+        type: 'password',
+        name: 'password',
+        message: 'Your password is ...'
+    },
+];
+function promptLogin() {
+    prompt(loginQuestions).then(answers => {
+        userAcct = userLogin(answers);
+        if (!userAcct) { 
+            promptLogin(); 
+        } else {
+            console.info("Welcome back " + userAcct.name + " your current balance is " + userAcct.balance);
+            acctOptions();
+        }
+    });
+}
+
+function addTrans(transType) {
+    prompt([
+        {
+            type: 'input',
+            name: 'amount',
+            message: 'Amount:'
+        }
+    ]).then(answers => {
+        newTx(userAcct.id, transType, answers.amount);
+        acctOptions();
+    });
+}
+
+function listTrans() {
+    var transactions = listTx(userAcct.id);
+    var dispType = '';
+    if (transactions.length > 0) {
+        console.log('Date\t\t\tType\t\tAmount')
+        for (var n = 0; n < transactions.length; n++) {
+            if (transactions[n].type.toLocaleLowerCase() === 'd') {
+                dispType = 'Deposit\t';
+            } else {
+                dispType = 'Withdrawal';
+            }
+            console.log(transactions[n].date + '\t' + dispType + '\t' + parseFloat(transactions[n].amount));
+        }
+        console.log('Ending balance: ' + userAcct.balance);
+    }
+    acctOptions();
+}
+
+startupOptions();
+/*program
+    .command('addAccount')
+    .alias('a')
+    .description('Add a new account')
+    .action(() => {
+        prompt(addQuestions).then(answers => addAccount(answers));
 });
 
-prompt.on(':new', function(name, question){
-  current = name;
-  console.log(question);
-  process.stdout.write('> ');
+program
+    .command('newTx <acct> <type> <amount>')
+    .alias('t')
+    .description("New transaciton")
+    .action((acct, type, amount) => {
+        newTx(acct, type, amount);
 });
 
-prompt.on(':end', function(){
-  console.log('\n', result);
-  process.stdin.pause();
-});
-
-prompt.emit(':new', 'name', 'What is your name?');
-
-prompt.on('name', function(data){
-  result.name = data;
-  prompt.emit(':new', 'hobbies', 'What are your hobbies?');
-});
-
-prompt.on('hobbies', function(data){
-  result.hobbies = data.split(/,\s?/);
-  prompt.emit(':new', 'username', 'What is your username?');
-});
-
-prompt.on('username', function(data){
-  result.username = data;
-  prompt.emit(':end');
-});
+program.parse(process.argv);*/
